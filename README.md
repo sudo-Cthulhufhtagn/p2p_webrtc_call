@@ -7,8 +7,8 @@ video. One HTML file.
 
 ---
 
-Somebody opens a room and gets an 8-character code, a link and a QR. Everyone else scans or
-types it. The browsers then talk **straight to each other** over WebRTC — the signalling server
+Somebody opens a room and gets an 8-character code and a link. Everyone else opens the link or
+types the code. The browsers then talk **straight to each other** over WebRTC — the signalling server
 only introduces them and then stops mattering. Your camera feed never lands on anyone's disk.
 
 ## What's in it
@@ -23,8 +23,7 @@ only introduces them and then stops mattering. Your camera feed never lands on a
   encrypted link. Hover it and it tells you what it means.
 - **Failures say so.** Broker down, code taken, camera blocked, clipboard denied — all of it
   surfaces as a toast instead of a button that does nothing.
-- **Desktop and mobile**, one layout that actually reflows. QR is there so the phone never types
-  the code.
+- **Desktop and mobile**, one layout that actually reflows.
 - **Codes that survive being read aloud** — no `0`/`O`, no `1`/`I`.
 - **Zero build.** No npm, no bundler, no framework. Two CDN scripts and about 400 lines.
 
