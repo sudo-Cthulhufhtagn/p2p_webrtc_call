@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Carrier — direct browser calls</title>
+<title>WebRTC P2P Demo</title>
 <meta name="description" content="Peer-to-peer video calls for 2–3 people. No account, no server holding your stream.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -259,7 +259,7 @@
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 const $ = s => document.querySelector(s);
-const PREFIX = 'carrier-';        // ponytail: the public PeerJS broker is one shared namespace
+const PREFIX = 'p2pdemo-';        // ponytail: the public PeerJS broker is one shared namespace
 const peers = new Set();          // remote peer ids we already have a media call with
 let peer, stream, mode, code, url, ac, raf;
 

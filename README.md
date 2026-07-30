@@ -1,4 +1,4 @@
-# Carrier
+# WebRTC P2P Demo
 
 **A direct line between two or three browsers.** No account, no install, no server holding your
 video. One HTML file.
@@ -42,7 +42,7 @@ workflow publishes to Pages.
 
 ```
 host                                 guest
- │  new Peer("carrier-AB3K9XZQ")       │
+ │  new Peer("p2pdemo-AB3K9XZQ")       │
  │◄────── data channel ────────────────┤   "I'm here"
  ├─────── list of peers ──────────────►│
  │◄══════ media call ═════════════════►│   ...and the guest calls
