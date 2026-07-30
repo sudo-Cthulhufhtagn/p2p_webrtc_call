@@ -16,7 +16,13 @@ only introduces them and then stops mattering. Your camera feed never lands on a
 - **2–3 people**, full mesh — everyone connected to everyone, no mixing server.
 - **Camera and mic off before you enter.** Join dark, join muted, or both — the same toggles are
   in the call bar.
+- **A live mic meter** in the check-yourself screen, so you find out your input is dead before
+  the call, not during it.
 - **Mute everyone else** with one button when the room gets loud.
+- **A status lamp** — red for no signalling, amber for room open and waiting, green for a direct
+  encrypted link. Hover it and it tells you what it means.
+- **Failures say so.** Broker down, code taken, camera blocked, clipboard denied — all of it
+  surfaces as a toast instead of a button that does nothing.
 - **Desktop and mobile**, one layout that actually reflows. QR is there so the phone never types
   the code.
 - **Codes that survive being read aloud** — no `0`/`O`, no `1`/`I`.

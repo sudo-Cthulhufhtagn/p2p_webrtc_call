@@ -10,62 +10,41 @@
 
 <style>
   :root {
-    --ink:      #0A0C10;
-    --panel:    #141A22;
-    --edge:     #263040;
-    --text:     #E9ECF1;
-    --muted:    #8894A6;
-    --signal:   #F2A65A;
-    --live:     #4ADE80;
-    --display:  'Bricolage Grotesque', system-ui, sans-serif;
-    --mono:     'JetBrains Mono', ui-monospace, monospace;
+    --ink:     #0A0C10;
+    --panel:   #141A22;
+    --edge:    #263040;
+    --text:    #E9ECF1;
+    --muted:   #8894A6;
+    --signal:  #F2A65A;
+    --live:    #4ADE80;
+    --dead:    #FF7A8A;
+    --display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --mono:    'JetBrains Mono', ui-monospace, monospace;
     color-scheme: dark;
   }
   * { box-sizing: border-box }
   body {
     margin: 0; min-height: 100dvh; background: var(--ink); color: var(--text);
-    font-family: var(--mono); font-size: 15px;
-    background-image: radial-gradient(120% 80% at 50% -20%, #1A2230 0%, var(--ink) 60%);
+    font-family: var(--mono); font-size: 15px; -webkit-text-size-adjust: 100%;
+    background-image: radial-gradient(120% 70% at 50% -20%, #1A2230 0%, var(--ink) 55%);
   }
-  h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: -.02em; margin: 0 }
-  .eyebrow {
-    font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted);
-  }
+  h1, h2, h3 { font-family: var(--display); font-weight: 800; letter-spacing: -.02em; margin: 0 }
+  .eyebrow { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted) }
+  [hidden] { display: none !important }
 
   /* ---- stages ------------------------------------------------------- */
   .stage {
     min-height: 100dvh; display: flex; flex-direction: column; justify-content: center;
-    align-items: center; gap: 28px; padding: 32px 20px calc(32px + env(safe-area-inset-bottom));
-    max-width: 560px; margin: 0 auto; text-align: center;
+    align-items: center; gap: 26px; max-width: 560px; margin: 0 auto; text-align: center;
+    padding: 48px 20px calc(48px + env(safe-area-inset-bottom));
   }
-  [hidden] { display: none !important }
-
   .brand h1 { font-size: clamp(44px, 13vw, 76px); line-height: .92 }
-  .brand h1 em {
-    font-style: normal; color: var(--signal);
-    /* the dot on the "i" of the wordmark doubles as the carrier lamp */
-  }
+  .brand h1 em { font-style: normal; color: var(--signal) }
   .brand p { color: var(--muted); margin: 14px 0 0; font-size: 14px; line-height: 1.6 }
 
-  /* ---- carrier line: the signature ---------------------------------- */
-  .carrier { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px }
-  .carrier i {
-    width: 9px; height: 9px; border-radius: 50%; flex: none;
-    background: var(--edge); box-shadow: 0 0 0 4px #26304055;
-  }
-  .carrier span {
-    flex: 1; height: 2px;
-    background: repeating-linear-gradient(90deg, var(--edge) 0 7px, transparent 7px 14px);
-    background-size: 14px 2px; animation: drift 1.4s linear infinite;
-  }
-  @keyframes drift { to { background-position: 14px 0 } }
-  .carrier.up i { background: var(--live) }
-  .carrier.up span { background: var(--live); animation: none; opacity: .55 }
-  .carrier.up i:first-child { background: var(--signal) }
-
-  /* ---- controls ------------------------------------------------------ */
-  .choices { display: grid; gap: 12px; width: 100%; }
-  button, .btn {
+  /* ---- buttons ------------------------------------------------------ */
+  .choices { display: grid; gap: 12px; width: 100% }
+  button {
     font: 600 14px/1 var(--mono); letter-spacing: .04em; text-transform: uppercase;
     color: var(--text); background: var(--panel); border: 1px solid var(--edge);
     padding: 18px 20px; border-radius: 12px; cursor: pointer; text-align: left;
@@ -78,92 +57,112 @@
     letter-spacing: 0; text-transform: none; color: var(--muted);
   }
   button .num { color: var(--signal); font-size: 12px; align-self: flex-start }
-  .primary {
-    background: var(--signal); color: #10131A; border-color: var(--signal);
-    justify-content: center; text-align: center;
-  }
+  .primary { background: var(--signal); color: #10131A; border-color: var(--signal);
+             justify-content: center; text-align: center }
   .primary:hover { background: #FFBE72 }
-  .ghost { background: none; justify-content: center; padding: 14px }
-  .link { background: none; border: 0; color: var(--muted); text-transform: none; letter-spacing: 0;
-          font-weight: 400; padding: 8px; justify-content: center }
+  .link { background: none; border: 0; color: var(--muted); text-transform: none;
+          letter-spacing: 0; font-weight: 400; padding: 8px; justify-content: center }
   .link:hover { color: var(--text) }
 
+  /* ---- how it works -------------------------------------------------- */
+  .how { width: 100%; text-align: left; border-top: 1px solid var(--edge); padding-top: 26px }
+  .how h3 { font-size: 15px; margin-bottom: 16px; letter-spacing: .04em }
+  .how dl { margin: 0; display: grid; gap: 16px }
+  .how dt { color: var(--signal); font-size: 11px; letter-spacing: .22em; text-transform: uppercase }
+  .how dd { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 1.65 }
+  .how dd b { color: var(--text); font-weight: 600 }
+  .caveat { margin-top: 20px; padding: 14px 16px; border-radius: 10px;
+            background: #1A1410; border: 1px solid #3D2A18; color: #C9A57E;
+            font-size: 12px; line-height: 1.6 }
+
   /* ---- setup --------------------------------------------------------- */
-  .preview {
-    width: 100%; aspect-ratio: 4/3; background: #0D1117; border: 1px solid var(--edge);
-    border-radius: 16px; overflow: hidden; position: relative;
-  }
+  .preview { width: 100%; aspect-ratio: 4/3; background: #0D1117; border: 1px solid var(--edge);
+             border-radius: 16px; overflow: hidden; position: relative }
   .preview video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1) }
-  .preview .off-note {
-    position: absolute; inset: 0; display: grid; place-content: center;
-    color: var(--muted); font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
+  .preview .off-note { position: absolute; inset: 0; display: grid; place-content: center;
+                       color: var(--muted); font-size: 12px; letter-spacing: .2em; text-transform: uppercase }
+  /* mic level: segmented ladder, amber fills left to right */
+  #level { width: 100%; height: 10px; border-radius: 3px; overflow: hidden;
+           background: repeating-linear-gradient(90deg, var(--edge) 0 6px, transparent 6px 10px) }
+  #level::after {
+    content: ''; display: block; height: 100%; width: calc(var(--v, 0) * 100%);
+    background: repeating-linear-gradient(90deg, var(--signal) 0 6px, transparent 6px 10px);
+    transition: width .06s linear;
   }
-  .toggles { display: flex; gap: 10px; width: 100%; }
+  .toggles { display: flex; gap: 10px; width: 100% }
   .toggles button { flex: 1; justify-content: center; padding: 14px 8px; font-size: 12px }
   .toggles button[aria-pressed="false"] { color: var(--muted); border-style: dashed }
   .toggles button[aria-pressed="false"] svg { opacity: .45 }
-
   input {
-    font: 600 28px/1 var(--mono); letter-spacing: .34em; text-align: center; text-transform: uppercase;
+    font: 600 26px/1 var(--mono); letter-spacing: .3em; text-align: center; text-transform: uppercase;
     width: 100%; padding: 20px 12px 20px 22px; color: var(--text);
     background: var(--panel); border: 1px solid var(--edge); border-radius: 12px;
   }
   input:focus { outline: none; border-color: var(--signal) }
-  input::placeholder { color: #3A4557; letter-spacing: .34em }
-
-  /* ---- code readout -------------------------------------------------- */
-  .readout { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap }
-  .readout b {
-    font: 600 clamp(20px, 6.2vw, 30px)/1 var(--mono); color: var(--signal);
-    background: var(--panel); border: 1px solid var(--edge); border-radius: 8px;
-    padding: 12px 0; width: clamp(34px, 9.2vw, 44px); text-align: center;
-  }
-  #qr { border-radius: 12px; display: block; margin: 0 auto; width: 172px; height: 172px }
-  .copy-row { display: flex; gap: 8px; width: 100% }
-  .copy-row button { flex: 1; justify-content: center; font-size: 12px; padding: 14px }
+  input::placeholder { color: #3A4557 }
 
   /* ---- call ---------------------------------------------------------- */
-  #call { padding: 0; display: flex; flex-direction: column; height: 100dvh }
-  #grid {
-    flex: 1; min-height: 0; display: grid; gap: 8px; padding: 8px;
-    grid-template-columns: 1fr; grid-auto-rows: 1fr;
-  }
+  #call { display: flex; flex-direction: column; height: 100dvh }
+  #top { display: flex; gap: 8px; align-items: center; padding: 10px 12px 0 }
+  #grid { flex: 1; min-height: 0; display: grid; gap: 8px; padding: 8px;
+          grid-template-columns: 1fr; grid-auto-rows: 1fr }
   @media (min-width: 720px) {
-    #grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items: stretch }
+    #grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) }
   }
-  .tile {
-    position: relative; background: #0D1117; border: 1px solid var(--edge);
-    border-radius: 14px; overflow: hidden; min-height: 0;
-  }
+  .tile { position: relative; background: #0D1117; border: 1px solid var(--edge);
+          border-radius: 14px; overflow: hidden; min-height: 0 }
   .tile video { width: 100%; height: 100%; object-fit: cover; display: block }
   .tile.me video { transform: scaleX(-1) }
-  .tile figcaption {
-    position: absolute; left: 10px; bottom: 10px; font-size: 11px; letter-spacing: .18em;
-    text-transform: uppercase; color: var(--text); background: #0A0C10CC;
-    padding: 6px 10px; border-radius: 999px; backdrop-filter: blur(6px);
-  }
-  #bar {
-    display: flex; gap: 10px; justify-content: center; align-items: center;
-    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--edge); background: #0A0C10;
-  }
-  #bar button {
-    width: 54px; height: 54px; padding: 0; border-radius: 50%; justify-content: center;
-  }
+  .tile figcaption { position: absolute; left: 10px; bottom: 10px; font-size: 11px;
+                     letter-spacing: .18em; text-transform: uppercase; background: #0A0C10CC;
+                     padding: 6px 10px; border-radius: 999px; backdrop-filter: blur(6px) }
+
+  /* status lamp — hover/focus shows what the colour means */
+  #status { display: flex; align-items: center; gap: 9px; padding: 9px 14px; cursor: help;
+            font-size: 11px; letter-spacing: .18em; color: var(--muted) }
+  #status::before { content: ''; width: 9px; height: 9px; border-radius: 50%; flex: none;
+                    background: var(--dead); box-shadow: 0 0 12px currentColor }
+  #status.amber::before { background: var(--signal) }
+  #status.green::before { background: var(--live) }
+  #status.amber { color: var(--signal) } #status.green { color: var(--live) }
+  #status.red    { color: var(--dead) }
+  #code-chip { margin-left: auto; color: var(--signal); letter-spacing: .22em; padding: 10px 16px }
+
+  #bar { display: flex; gap: 10px; justify-content: center; align-items: center;
+         padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+         border-top: 1px solid var(--edge); background: #0A0C10 }
+  #bar button { width: 54px; height: 54px; padding: 0; border-radius: 50%; justify-content: center }
   #bar button[aria-pressed="false"] { color: var(--muted); background: none; border-style: dashed }
-  #bar .leave { background: #3A1620; border-color: #6B2436; color: #FF8FA3; width: auto; padding: 0 22px }
-  #bar .leave:hover { background: #4D1B2A; border-color: #FF8FA3 }
-  #room {
-    position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: center;
-    padding: 12px; pointer-events: none;
-  }
-  #room button {
-    pointer-events: auto; padding: 10px 16px; font-size: 13px; letter-spacing: .22em;
-    background: #0A0C10CC; backdrop-filter: blur(6px); color: var(--signal);
-  }
+  #bar .leave { background: #3A1620; border-color: #6B2436; color: var(--dead);
+                width: auto; padding: 0 22px }
+  #bar .leave:hover { background: #4D1B2A; border-color: var(--dead) }
+
+  /* ---- share sheet ---------------------------------------------------- */
+  #share { position: fixed; inset: 0; z-index: 20; background: #05070AE6;
+           display: grid; place-items: center; padding: 20px; backdrop-filter: blur(4px) }
+  #share > div { background: var(--panel); border: 1px solid var(--edge); border-radius: 18px;
+                 padding: 28px 22px; max-width: 380px; width: 100%; text-align: center;
+                 display: grid; gap: 18px; max-height: 92dvh; overflow: auto }
+  .readout { display: flex; gap: 5px; justify-content: center }
+  .readout b { font: 600 clamp(18px, 5.6vw, 26px)/1 var(--mono); color: var(--signal);
+               background: #0D1117; border: 1px solid var(--edge); border-radius: 7px;
+               padding: 11px 0; flex: 1; max-width: 42px }
+  #qr { border-radius: 12px; width: 190px; height: 190px; justify-self: center }
+  .row { display: flex; gap: 8px }
+  .row button { flex: 1; justify-content: center; font-size: 12px; padding: 14px 6px }
+
+  /* ---- toasts --------------------------------------------------------- */
+  #toasts { position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; z-index: 50;
+            display: grid; gap: 8px; width: min(440px, calc(100% - 24px)) }
+  .toast { background: #2A1218; border: 1px solid #6B2436; color: #FFD9DF; border-radius: 10px;
+           padding: 13px 16px; font-size: 12px; line-height: 1.5; text-align: left;
+           animation: rise .2s ease-out }
+  .toast.info { background: var(--panel); border-color: var(--edge); color: var(--text) }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px) } }
+
   svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8;
         stroke-linecap: round; stroke-linejoin: round; flex: none }
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
+  @media (prefers-reduced-motion: reduce) { *, *::after { animation: none !important; transition: none !important } }
 </style>
 
 <!-- ═══ 1. lobby ═══ -->
@@ -173,50 +172,62 @@
     <h1>Carr<em>i</em>er</h1>
     <p>A direct line between two or three browsers.<br>Your video never touches a server.</p>
   </div>
-  <div class="carrier"><i></i><span></span><i></i></div>
   <div class="choices">
     <button id="go-host"><span class="num">01</span><span>Open a room
       <span class="sub">Get a code, a link and a QR to hand out.</span></span></button>
     <button id="go-join"><span class="num">02</span><span>Join a room
       <span class="sub">You need the 8-character code from the host.</span></span></button>
   </div>
+
+  <section class="how">
+    <h3>How the call gets made</h3>
+    <dl>
+      <div><dt>1 · The introduction</dt>
+        <dd>The room code is an address on a public <b>PeerJS</b> broker. Both browsers say hello
+          there and swap the details they need to find each other: candidate IP addresses and one
+          encryption fingerprint each. That's the broker's entire job.</dd></div>
+      <div><dt>2 · The direct line</dt>
+        <dd><b>WebRTC</b> then punches a path straight between the two machines and the broker
+          drops out. Audio and video travel device to device — nothing in this project stores,
+          records or relays a frame.</dd></div>
+      <div><dt>3 · The encryption</dt>
+        <dd>WebRTC has <b>no unencrypted mode</b>. Every stream is DTLS-SRTP, keys negotiated
+          between the two browsers, so anyone tapping the wire — your ISP, the café wifi, the
+          broker itself — sees ciphertext and packet timing, not your face or your voice.</dd></div>
+    </dl>
+    <p class="caveat"><b>The honest caveat.</b> You verify each other's keys by trusting the broker
+      that passed them along. A hostile broker could in principle hand both sides its own
+      fingerprint and sit in the middle. Good enough for talking to friends; not an audited
+      end-to-end system, so don't run a source meeting on it.</p>
+  </section>
 </main>
 
 <!-- ═══ 2. setup ═══ -->
 <main class="stage" id="setup" hidden>
   <div>
-    <p class="eyebrow">Step two</p>
+    <p class="eyebrow">Before you go in</p>
     <h2 id="setup-title" style="font-size:30px;margin-top:8px">Check yourself</h2>
   </div>
-  <div class="preview"><p class="off-note" id="off-note" hidden>Camera off</p><video id="pv" autoplay playsinline muted></video></div>
+  <div class="preview"><p class="off-note" id="off-note" hidden>Camera off</p>
+    <video id="pv" autoplay playsinline muted></video></div>
+  <div id="level" title="Your microphone level"></div>
   <div class="toggles">
     <button id="t-mic" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Mic</button>
     <button id="t-cam" aria-pressed="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="12" rx="3"/><path d="m15 11 6-4v10l-6-4"/></svg>Camera</button>
   </div>
-  <input id="code-in" placeholder="········" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" hidden>
+  <input id="code-in" placeholder="XXXXXXXX" maxlength="8" autocomplete="off"
+         autocapitalize="characters" spellcheck="false" hidden>
   <button class="primary" id="enter" style="width:100%">Open the room</button>
   <button class="link" id="back">← back</button>
 </main>
 
-<!-- ═══ 3. share (host only) ═══ -->
-<main class="stage" id="share" hidden>
-  <div>
-    <p class="eyebrow">Room is live · waiting</p>
-    <h2 style="font-size:26px;margin-top:8px">Hand this to your people</h2>
-  </div>
-  <div class="readout" id="readout"></div>
-  <canvas id="qr"></canvas>
-  <div class="carrier" id="carrier2"><i></i><span></span><i></i></div>
-  <div class="copy-row">
-    <button id="copy">Copy link</button>
-    <button class="primary" id="to-call" style="flex:1">Enter room</button>
-  </div>
-</main>
-
-<!-- ═══ 4. call ═══ -->
+<!-- ═══ 3. call ═══ -->
 <div id="call" hidden>
+  <div id="top">
+    <span id="status" class="red" tabindex="0" title="Connecting…">Connecting</span>
+    <button id="code-chip" hidden></button>
+  </div>
   <div id="grid"></div>
-  <div id="room"><button id="show-code" hidden></button></div>
   <div id="bar">
     <button id="c-mic" aria-pressed="true" title="Microphone" aria-label="Microphone"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
     <button id="c-cam" aria-pressed="true" title="Camera" aria-label="Camera"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="12" rx="3"/><path d="m15 11 6-4v10l-6-4"/></svg></button>
@@ -225,53 +236,110 @@
   </div>
 </div>
 
+<!-- ═══ share sheet (over the call) ═══ -->
+<div id="share" hidden><div>
+  <p class="eyebrow">Room code</p>
+  <div class="readout" id="readout"></div>
+  <canvas id="qr"></canvas>
+  <div class="row">
+    <button id="copy-code">Copy code</button>
+    <button id="copy-link">Copy link</button>
+  </div>
+  <button class="primary" id="close-share">Back to the room</button>
+</div></div>
+
+<div id="toasts"></div>
+
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
 const $ = s => document.querySelector(s);
-const PREFIX = 'carrier-';        // ponytail: public PeerJS server is one shared namespace; prefix avoids id clashes
-const peers = new Set();          // remote peer ids we already have a call with
-let peer, stream, mode, code, url;
+const PREFIX = 'carrier-';        // ponytail: the public PeerJS broker is one shared namespace
+const peers = new Set();          // remote peer ids we already have a media call with
+let peer, stream, mode, code, url, ac, raf;
 
-const show = id => ['lobby', 'setup', 'share', 'call'].forEach(
-  s => $('#' + s).hidden = s !== id);
+/* ---- toasts: every failure surfaces here, nothing dies silently ------ */
+function toast(msg, kind = 'error') {
+  const t = Object.assign(document.createElement('div'), { className: 'toast ' + kind, textContent: msg });
+  $('#toasts').append(t);
+  setTimeout(() => t.remove(), 6000);
+}
+addEventListener('error', e => toast(e.message));
+addEventListener('unhandledrejection', e => toast(e.reason?.message || String(e.reason)));
+
+/* ---- status lamp ----------------------------------------------------- */
+const STATES = {
+  red:   'No signalling connection. Nobody can reach this room right now — check your network.',
+  amber: 'Signalling is up and the room is open. Waiting for someone to connect.',
+  green: 'Connected directly to the other side. Audio and video are flowing, encrypted.',
+};
+let brokerUp = false;
+function refresh() {
+  const s = !brokerUp ? 'red' : peers.size ? 'green' : 'amber';
+  const lamp = $('#status');
+  lamp.className = s;
+  lamp.title = STATES[s];
+  lamp.textContent = s === 'green' ? `Connected · ${peers.size + 1}` : s === 'amber' ? 'Waiting' : 'Offline';
+}
+
+const show = id => ['lobby', 'setup', 'call'].forEach(s => $('#' + s).hidden = s !== id);
 
 const randCode = () =>            // no 0/O/1/I — these get read aloud and typed on phones
   [...crypto.getRandomValues(new Uint8Array(8))]
     .map(n => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[n % 32]).join('');
 
-/* ---- media ---------------------------------------------------------- */
-// ponytail: always grab both tracks, then just disable what you didn't want.
-// Renegotiating a track mid-call is a lot of code; `enabled = false` sends black/silence.
-const track = kind => stream?.getTracks().find(t => t.kind === kind);
-
+/* ---- media ----------------------------------------------------------- */
+// ponytail: grab both tracks up front, then just disable what you didn't want.
+// Adding a track mid-call means renegotiation; `enabled = false` sends black/silence for free.
 function setTrack(kind, on) {
-  const t = track(kind); if (!t) return;
+  const t = stream?.getTracks().find(t => t.kind === kind); if (!t) return;
   t.enabled = on;
   document.querySelectorAll(`[data-t="${kind}"]`).forEach(b => b.setAttribute('aria-pressed', on));
   if (kind === 'video') $('#off-note').hidden = on;
 }
+const bindToggle = (btn, kind) => {
+  btn.dataset.t = kind;
+  btn.onclick = () => setTrack(kind, btn.getAttribute('aria-pressed') === 'false');
+};
+['#t-mic', '#c-mic'].forEach(s => bindToggle($(s), 'audio'));
+['#t-cam', '#c-cam'].forEach(s => bindToggle($(s), 'video'));
 
-/* ---- peers ---------------------------------------------------------- */
+function meter(src) {                        // live mic level while you check yourself
+  ac = new AudioContext();
+  const an = ac.createAnalyser(); an.fftSize = 512;
+  ac.createMediaStreamSource(src).connect(an);
+  const buf = new Uint8Array(an.fftSize);
+  (function loop() {
+    an.getByteTimeDomainData(buf);
+    let peak = 0;
+    for (const v of buf) peak = Math.max(peak, Math.abs(v - 128));
+    $('#level').style.setProperty('--v', Math.min(1, peak / 45).toFixed(2));
+    raf = requestAnimationFrame(loop);
+  })();
+}
+const stopMeter = () => { cancelAnimationFrame(raf); ac?.close(); ac = null };
+
+/* ---- peers ----------------------------------------------------------- */
 function tile(id, srcObject, label, mine) {
   let el = document.getElementById('t-' + id);
   if (!el) {
-    el = document.createElement('figure');
-    el.id = 't-' + id;
-    el.className = 'tile' + (mine ? ' me' : '');
-    el.innerHTML = `<video autoplay playsinline ${mine ? 'muted' : ''}></video>
-                    <figcaption>${label}</figcaption>`;
+    el = Object.assign(document.createElement('figure'),
+      { id: 't-' + id, className: 'tile' + (mine ? ' me' : '') });
+    el.innerHTML = `<video autoplay playsinline ${mine ? 'muted' : ''}></video><figcaption></figcaption>`;
+    el.querySelector('figcaption').textContent = label;
     $('#grid').append(el);
   }
-  el.querySelector('video').srcObject = srcObject;
-  el.querySelector('video').muted = mine || $('#c-spk').getAttribute('aria-pressed') === 'false';
+  const v = el.querySelector('video');
+  v.srcObject = srcObject;
+  v.muted = mine || $('#c-spk').getAttribute('aria-pressed') === 'false';
+  v.play?.().catch(() => {});
 }
 
 function handle(call, id = call.peer) {
-  peers.add(id);
-  call.on('stream', s => tile(id, s, 'Guest ' + peers.size));
-  call.on('close', () => { peers.delete(id); document.getElementById('t-' + id)?.remove() });
-  call.on('error', () => peers.delete(id));
+  peers.add(id); refresh();
+  call.on('stream', s => { tile(id, s, 'Guest ' + peers.size); refresh() });
+  call.on('close', () => { peers.delete(id); document.getElementById('t-' + id)?.remove(); refresh() });
+  call.on('error', e => { peers.delete(id); refresh(); toast('Call dropped: ' + e.message) });
 }
 
 const connect = id => {
@@ -279,19 +347,30 @@ const connect = id => {
   handle(peer.call(id, stream), id);
 };
 
-async function start(id) {
+// ponytail: never await this before painting the room — a stalled broker used to mean a dead button
+function start(id) {
   peer = new Peer(id);
+  peer.on('open', () => { brokerUp = true; refresh() });
+  peer.on('disconnected', () => { brokerUp = false; refresh() });
+  peer.on('close', () => { brokerUp = false; refresh() });
   peer.on('call', c => { c.answer(stream); handle(c) });
-  peer.on('error', e => alert(e.type === 'unavailable-id'
-    ? 'That code is already in use. Open a new room.'
-    : e.type === 'peer-unavailable' ? 'No room with that code.' : e.message));
-  return new Promise(res => peer.on('open', res));
+  peer.on('error', e => {
+    toast({
+      'unavailable-id': 'That code is already taken. Leave and open a new room.',
+      'peer-unavailable': 'No room with that code — check it and try again.',
+      'network': 'Lost the signalling server. Reconnecting…',
+      'browser-incompatible': 'This browser cannot do WebRTC calls.',
+    }[e.type] || `${e.type}: ${e.message}`);
+    if (e.type !== 'peer-unavailable') { brokerUp = false; refresh() }
+  });
 }
 
-/* ---- flow ----------------------------------------------------------- */
+/* ---- flow ------------------------------------------------------------ */
 $('#go-host').onclick = () => openSetup('host');
 $('#go-join').onclick = () => openSetup('join');
-$('#back').onclick = () => { stream?.getTracks().forEach(t => t.stop()); stream = null; show('lobby') };
+$('#back').onclick = () => {
+  stopMeter(); stream?.getTracks().forEach(t => t.stop()); stream = null; show('lobby');
+};
 
 async function openSetup(m) {
   mode = m;
@@ -302,18 +381,57 @@ async function openSetup(m) {
   try {
     stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     $('#pv').srcObject = stream;
-  } catch {
-    alert('No camera or microphone access — the call needs at least one of them.');
+    meter(stream);
+  } catch (e) {
+    toast(e.name === 'NotAllowedError'
+      ? 'Camera and microphone were blocked. Allow them in the address bar, then try again.'
+      : 'No camera or microphone available: ' + e.message);
     show('lobby');
   }
 }
 
-const bindToggle = (btn, kind) => {
-  btn.dataset.t = kind;
-  btn.onclick = () => setTrack(kind, btn.getAttribute('aria-pressed') === 'false');
+$('#enter').onclick = () => {
+  if (!stream) return toast('Still waiting on the camera.');
+  stopMeter();
+  if (mode === 'join') {
+    code = $('#code-in').value.trim().toUpperCase();
+    if (code.length !== 8) return toast('The code is exactly 8 characters.');
+    start(undefined);
+    const host = PREFIX + code;
+    peer.on('open', () => {
+      const conn = peer.connect(host);
+      conn.on('open', () => connect(host));
+      conn.on('data', ids => ids.forEach(connect));   // mesh up with the other guests
+    });
+  } else {
+    code = randCode();
+    start(PREFIX + code);
+    // A joiner opens a data channel first; we answer with everyone we know, they call each.
+    peer.on('connection', c => c.on('open', () => c.send([...peers].filter(p => p !== c.peer))));
+    url = location.origin + location.pathname + '?c=' + code;
+    $('#readout').innerHTML = '';
+    for (const ch of code) $('#readout').append(Object.assign(document.createElement('b'), { textContent: ch }));
+    QRCode.toCanvas($('#qr'), url, { margin: 1, width: 380, color: { dark: '#0A0C10', light: '#F2A65A' } },
+      e => e && toast('QR failed: ' + e.message));
+    $('#code-chip').hidden = false;
+    $('#code-chip').textContent = code;
+    $('#share').hidden = false;
+  }
+  show('call');
+  refresh();
+  tile('me', stream, 'You', true);
 };
-bindToggle($('#t-mic'), 'audio'); bindToggle($('#t-cam'), 'video');
-bindToggle($('#c-mic'), 'audio'); bindToggle($('#c-cam'), 'video');
+
+const copy = async (text, btn, label) => {
+  try { await navigator.clipboard.writeText(text) }
+  catch { return toast('Clipboard blocked — the code is on screen, read it out.') }
+  btn.textContent = 'Copied';
+  setTimeout(() => btn.textContent = label, 1500);
+};
+$('#copy-code').onclick = () => copy(code, $('#copy-code'), 'Copy code');
+$('#copy-link').onclick = () => copy(url, $('#copy-link'), 'Copy link');
+$('#close-share').onclick = () => $('#share').hidden = true;
+$('#code-chip').onclick = () => $('#share').hidden = false;
 
 $('#c-spk').onclick = () => {
   const on = $('#c-spk').getAttribute('aria-pressed') === 'false';
@@ -321,54 +439,12 @@ $('#c-spk').onclick = () => {
   document.querySelectorAll('.tile:not(.me) video').forEach(v => v.muted = !on);
 };
 
-$('#enter').onclick = async () => {
-  if (mode === 'join') {
-    code = $('#code-in').value.trim().toUpperCase();
-    if (code.length !== 8) return $('#code-in').focus();
-    await start(undefined);
-    const host = PREFIX + code;
-    const conn = peer.connect(host);
-    conn.on('open', () => connect(host));
-    conn.on('data', ids => ids.forEach(connect));   // mesh up with the other guests
-    enterCall();
-  } else {
-    code = randCode();
-    await start(PREFIX + code);
-    // A joiner opens a data channel first; we answer with everyone we know, they call each.
-    peer.on('connection', c => {
-      c.on('open', () => c.send([...peers].filter(p => p !== c.peer)));
-      $('#carrier2').classList.add('up');
-    });
-    url = location.origin + location.pathname + '?c=' + code;
-    $('#readout').innerHTML = [...code].map(ch => `<b>${ch}</b>`).join('');
-    QRCode.toCanvas($('#qr'), url, { margin: 1, width: 344, color: { dark: '#0A0C10', light: '#F2A65A' } });
-    show('share');
-  }
-};
-
-$('#copy').onclick = async () => {
-  await navigator.clipboard.writeText(url);
-  $('#copy').textContent = 'Copied';
-  setTimeout(() => $('#copy').textContent = 'Copy link', 1500);
-};
-$('#to-call').onclick = enterCall;
-
-function enterCall() {
-  show('call');
-  tile('me', stream, 'You', true);
-  if (mode === 'host') {
-    const b = $('#show-code');
-    b.hidden = false; b.textContent = code;
-    b.onclick = () => { show('share'); };
-  }
-}
-
 $('#leave').onclick = () => {
   peer?.destroy(); stream?.getTracks().forEach(t => t.stop());
   location.href = location.pathname;
 };
 
-const c = new URLSearchParams(location.search).get('c');
-if (c) { $('#code-in').value = c.toUpperCase(); openSetup('join') }
+const fromLink = new URLSearchParams(location.search).get('c');
+if (fromLink) { $('#code-in').value = fromLink.toUpperCase(); openSetup('join') }
 </script>
 </html>
