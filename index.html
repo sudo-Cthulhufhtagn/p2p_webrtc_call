@@ -75,6 +75,18 @@
   .how[open] summary::after { content: '–' }
   .how summary:hover, .how[open] summary { color: var(--text) }
   .how summary:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 6px }
+  /* the panel itself glides open where the browser allows it; the steps always stagger in */
+  :root { interpolate-size: allow-keywords }
+  .how::details-content {
+    block-size: 0; overflow: clip;
+    transition: block-size .35s cubic-bezier(.22,.61,.36,1), content-visibility .35s allow-discrete;
+  }
+  .how[open]::details-content { block-size: auto }
+  .how[open] dl > div, .how[open] .caveat { animation: step .45s both cubic-bezier(.22,.61,.36,1) }
+  .how[open] dl > div:nth-child(2) { animation-delay: .08s }
+  .how[open] dl > div:nth-child(3) { animation-delay: .16s }
+  .how[open] .caveat { animation-delay: .24s }
+  @keyframes step { from { opacity: 0; transform: translateY(10px) } }
   .how dl { margin: 0 0 4px; display: grid; gap: 16px }
   .how dt { color: var(--signal); font-size: 11px; letter-spacing: .22em; text-transform: uppercase }
   .how dd { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 1.65 }
@@ -124,6 +136,15 @@
   .tile figcaption { position: absolute; left: 10px; bottom: 10px; font-size: 11px;
                      letter-spacing: .18em; text-transform: uppercase; background: #0A0C10CC;
                      padding: 6px 10px; border-radius: 999px; backdrop-filter: blur(6px) }
+  .tile .rtt { color: var(--muted) }
+  /* alone in the room: keep the frame at camera proportions instead of stretching it wall to wall */
+  #grid:has(.tile:only-child) { place-content: center; grid-template-columns: min(100%, 880px) }
+  .tile:only-child { aspect-ratio: 16 / 9; max-height: 100%; margin: auto }
+  .tile:only-child video { object-fit: contain }
+  .tile.audio-only video { display: none }
+  .tile.audio-only::after { content: 'Video hidden'; position: absolute; inset: 0;
+                            display: grid; place-content: center; color: var(--muted);
+                            font-size: 11px; letter-spacing: .2em; text-transform: uppercase }
 
   /* status lamp — hover/focus shows what the colour means */
   #status { display: flex; align-items: center; gap: 9px; padding: 9px 14px; cursor: help;
@@ -145,12 +166,20 @@
                 width: auto; padding: 0 22px }
   #bar .leave:hover { background: #4D1B2A; border-color: var(--dead) }
 
-  /* ---- share sheet ---------------------------------------------------- */
-  #share { position: fixed; inset: 0; z-index: 20; background: #05070AE6;
+  /* ---- sheets (share, settings) --------------------------------------- */
+  .sheet { position: fixed; inset: 0; z-index: 20; background: #05070AE6;
            display: grid; place-items: center; padding: 20px; backdrop-filter: blur(4px) }
-  #share > div { background: var(--panel); border: 1px solid var(--edge); border-radius: 18px;
+  .sheet > div { background: var(--panel); border: 1px solid var(--edge); border-radius: 18px;
                  padding: 28px 22px; max-width: 380px; width: 100%; text-align: center;
-                 display: grid; gap: 18px; max-height: 92dvh; overflow: auto }
+                 display: grid; gap: 18px; max-height: 92dvh; overflow: auto;
+                 animation: rise .2s ease-out }
+  .opt { text-align: left; width: 100% }
+  .opt[aria-pressed="true"] { border-color: var(--signal); color: var(--signal) }
+  .opt[aria-pressed="true"] .sub { color: #B9895A }
+  #lat { text-align: left; font-size: 12px; display: grid; gap: 8px; margin: 0 }
+  #lat div { display: flex; justify-content: space-between; gap: 10px; color: var(--muted) }
+  #lat b { color: var(--text); font-weight: 600; letter-spacing: .06em }
+  #lat .none { color: var(--muted) }
   .readout { display: flex; gap: 5px; justify-content: center }
   .readout b { font: 600 clamp(18px, 5.6vw, 26px)/1 var(--mono); color: var(--signal);
                background: #0D1117; border: 1px solid var(--edge); border-radius: 7px;
@@ -233,6 +262,7 @@
   <div id="top">
     <span id="status" class="red" tabindex="0" title="Connecting…">Connecting</span>
     <button id="code-chip" hidden></button>
+    <button id="gear" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.2a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1h.2a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   </div>
   <div id="grid"></div>
   <div id="bar">
@@ -244,7 +274,21 @@
 </div>
 
 <!-- ═══ share sheet (over the call) ═══ -->
-<div id="share" hidden><div>
+<div id="settings" class="sheet" hidden><div>
+  <p class="eyebrow">Settings</p>
+  <button class="opt" id="s-quality" aria-pressed="false"><span>Send low quality
+    <span class="sub">320 × 240 at 15 fps. Cuts your upload on a weak connection.</span></span></button>
+  <button class="opt" id="s-novideo" aria-pressed="false"><span>Hide incoming video
+    <span class="sub">Audio only on your side. Saves battery and CPU — the video is still
+      arriving, so it does not save bandwidth.</span></span></button>
+  <div>
+    <p class="eyebrow" style="text-align:left;margin:0 0 10px">Round trip</p>
+    <div id="lat"></div>
+  </div>
+  <button class="primary" id="close-settings">Back to the room</button>
+</div></div>
+
+<div id="share" class="sheet" hidden><div>
   <p class="eyebrow">Room code</p>
   <div class="readout" id="readout"></div>
   <div class="row">
@@ -261,7 +305,11 @@
 const $ = s => document.querySelector(s);
 const PREFIX = 'p2pdemo-';        // ponytail: the public PeerJS broker is one shared namespace
 const peers = new Set();          // remote peer ids we already have a media call with
+const calls = new Map();          // peer id → live MediaConnection, for stats and teardown
 let peer, stream, mode, code, url, ac, raf;
+
+const pressed = sel => $(sel).getAttribute('aria-pressed') === 'true';
+const flip = sel => { const on = !pressed(sel); $(sel).setAttribute('aria-pressed', on); return on };
 
 /* ---- toasts: every failure surfaces here, nothing dies silently ------ */
 function toast(msg, kind = 'error') {
@@ -278,13 +326,15 @@ const STATES = {
   amber: 'Signalling is up and the room is open. Waiting for someone to connect.',
   green: 'Connected directly to the other side. Audio and video are flowing, encrypted.',
 };
-let brokerUp = false;
+let brokerUp = false, fatal = null;   // fatal: a named failure that outranks "waiting"
 function refresh() {
-  const s = !brokerUp ? 'red' : peers.size ? 'green' : 'amber';
   const lamp = $('#status');
+  if (peers.size) fatal = null;
+  const s = fatal || !brokerUp ? 'red' : peers.size ? 'green' : 'amber';
   lamp.className = s;
-  lamp.title = STATES[s];
-  lamp.textContent = s === 'green' ? `Connected · ${peers.size + 1}` : s === 'amber' ? 'Waiting' : 'Offline';
+  lamp.title = fatal ? fatal.why : STATES[s];
+  lamp.textContent = fatal ? fatal.label
+    : s === 'green' ? `Connected · ${peers.size + 1}` : s === 'amber' ? 'Waiting' : 'Offline';
 }
 
 const show = id => ['lobby', 'setup', 'call'].forEach(s => $('#' + s).hidden = s !== id);
@@ -330,8 +380,10 @@ function tile(id, srcObject, label, mine) {
   if (!el) {
     el = Object.assign(document.createElement('figure'),
       { id: 't-' + id, className: 'tile' + (mine ? ' me' : '') });
-    el.innerHTML = `<video autoplay playsinline ${mine ? 'muted' : ''}></video><figcaption></figcaption>`;
-    el.querySelector('figcaption').textContent = label;
+    el.innerHTML = `<video autoplay playsinline ${mine ? 'muted' : ''}></video>
+      <figcaption><span class="who"></span><span class="rtt"></span></figcaption>`;
+    el.querySelector('.who').textContent = label;
+    if (!mine && pressed('#s-novideo')) el.classList.add('audio-only');
     $('#grid').append(el);
   }
   const v = el.querySelector('video');
@@ -341,10 +393,41 @@ function tile(id, srcObject, label, mine) {
 }
 
 function handle(call, id = call.peer) {
-  peers.add(id); refresh();
+  peers.add(id); calls.set(id, call); refresh();
+  const drop = () => { peers.delete(id); calls.delete(id); document.getElementById('t-' + id)?.remove(); refresh() };
   call.on('stream', s => { tile(id, s, 'Guest ' + peers.size); refresh() });
-  call.on('close', () => { peers.delete(id); document.getElementById('t-' + id)?.remove(); refresh() });
-  call.on('error', e => { peers.delete(id); refresh(); toast('Call dropped: ' + e.message) });
+  call.on('close', drop);
+  call.on('error', e => { drop(); toast('Call dropped: ' + e.message) });
+}
+
+/* ---- latency: the succeeded candidate pair knows the round trip -------- */
+async function pingAll() {
+  const rows = [];
+  for (const [id, call] of calls) {
+    let ms = null;
+    try {
+      (await call.peerConnection.getStats()).forEach(r => {
+        if (r.type === 'candidate-pair' && r.state === 'succeeded' && r.currentRoundTripTime != null)
+          ms = Math.round(r.currentRoundTripTime * 1000);
+      });
+    } catch {}
+    const el = document.getElementById('t-' + id);
+    if (el) el.querySelector('.rtt').textContent = ms == null ? '' : ` · ${ms} ms`;
+    rows.push([el?.querySelector('.who').textContent || 'Guest', ms]);
+  }
+  const lat = $('#lat');
+  lat.replaceChildren();
+  if (!rows.length) {
+    lat.append(Object.assign(document.createElement('p'),
+      { className: 'none', textContent: 'Nobody else is here yet.' }));
+    return;
+  }
+  for (const [who, ms] of rows) {
+    const row = document.createElement('div');
+    row.append(Object.assign(document.createElement('span'), { textContent: who }),
+               Object.assign(document.createElement('b'), { textContent: ms == null ? 'measuring…' : ms + ' ms' }));
+    lat.append(row);
+  }
 }
 
 const connect = id => {
@@ -360,13 +443,17 @@ function start(id) {
   peer.on('close', () => { brokerUp = false; refresh() });
   peer.on('call', c => { c.answer(stream); handle(c) });
   peer.on('error', e => {
-    toast({
-      'unavailable-id': 'That code is already taken. Leave and open a new room.',
-      'peer-unavailable': 'No room with that code — check it and try again.',
-      'network': 'Lost the signalling server. Reconnecting…',
-      'browser-incompatible': 'This browser cannot do WebRTC calls.',
-    }[e.type] || `${e.type}: ${e.message}`);
-    if (e.type !== 'peer-unavailable') { brokerUp = false; refresh() }
+    const known = {
+      'unavailable-id': ['Code taken', `The code ${code} is already in use. Leave and open a new room.`],
+      'peer-unavailable': ['No such room', `Nobody is hosting ${code}. The host may have closed the tab, or the code is mistyped.`],
+      'network': ['Signalling lost', 'Lost the connection to the signalling server. Reconnecting…'],
+      'browser-incompatible': ['Unsupported', 'This browser cannot make WebRTC calls.'],
+    }[e.type];
+    toast(known ? known[1] : `${e.type}: ${e.message}`);
+    // a wrong code must not keep sitting on "Waiting" — name the failure on the lamp
+    fatal = { label: known?.[0] || 'Error', why: known?.[1] || e.message };
+    if (e.type === 'network') brokerUp = false;
+    refresh();
   });
 }
 
@@ -423,6 +510,7 @@ $('#enter').onclick = () => {
   show('call');
   refresh();
   tile('me', stream, 'You', true);
+  setInterval(pingAll, 2000);
 };
 
 const copy = async (text, btn, label) => {
@@ -435,6 +523,31 @@ $('#copy-code').onclick = () => copy(code, $('#copy-code'), 'Copy code');
 $('#copy-link').onclick = () => copy(url, $('#copy-link'), 'Copy link');
 $('#close-share').onclick = () => $('#share').hidden = true;
 $('#code-chip').onclick = () => $('#share').hidden = false;
+
+/* ---- settings --------------------------------------------------------- */
+$('#gear').onclick = () => { pingAll(); $('#settings').hidden = false };
+$('#close-settings').onclick = () => $('#settings').hidden = true;
+
+// One applyConstraints on the local track re-encodes for everyone — no per-peer plumbing.
+$('#s-quality').onclick = async () => {
+  const low = flip('#s-quality');
+  try {
+    await stream?.getVideoTracks()[0]?.applyConstraints(low
+      ? { width: { ideal: 320 }, height: { ideal: 240 }, frameRate: { max: 15 } }
+      : { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { max: 30 } });
+  } catch (e) { toast('The camera refused that quality: ' + e.message) }
+};
+
+// ponytail: hiding + pausing the element is a decode/battery saving, not a bandwidth one.
+// Actually declining the stream needs transceiver renegotiation, which PeerJS does not expose.
+$('#s-novideo').onclick = () => {
+  const hide = flip('#s-novideo');
+  document.querySelectorAll('.tile:not(.me)').forEach(el => {
+    el.classList.toggle('audio-only', hide);
+    const v = el.querySelector('video');
+    hide ? v.pause() : v.play().catch(() => {});
+  });
+};
 
 $('#c-spk').onclick = () => {
   const on = $('#c-spk').getAttribute('aria-pressed') === 'false';
