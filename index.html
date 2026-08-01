@@ -176,6 +176,8 @@
   .opt { text-align: left; width: 100% }
   .opt[aria-pressed="true"] { border-color: var(--signal); color: var(--signal) }
   .opt[aria-pressed="true"] .sub { color: #B9895A }
+  #s-broker { font: 400 13px/1.2 var(--mono); letter-spacing: .04em; text-align: left;
+              text-transform: none; padding: 14px 16px }
   #lat { text-align: left; font-size: 12px; display: grid; gap: 8px; margin: 0 }
   #lat div { display: flex; justify-content: space-between; gap: 10px; color: var(--muted) }
   #lat b { color: var(--text); font-weight: 600; letter-spacing: .06em }
@@ -213,6 +215,8 @@
     <button id="go-join"><span class="num">02</span><span>Join a room
       <span class="sub">You need the 8-character code from the host.</span></span></button>
   </div>
+
+  <button class="link" id="open-settings">Settings</button>
 
   <details class="how">
     <summary>How the call gets made</summary>
@@ -281,10 +285,17 @@
     <span class="sub">Audio only on your side. Saves battery and CPU — the video is still
       arriving, so it does not save bandwidth.</span></span></button>
   <div>
+    <p class="eyebrow" style="text-align:left;margin:0 0 10px">Signalling server</p>
+    <input id="s-broker" placeholder="host:port — blank for the public PeerJS broker"
+           autocomplete="off" autocapitalize="off" spellcheck="false">
+    <p style="text-align:left;margin:8px 0 0;font:400 12px/1.4 var(--mono);color:var(--muted)">
+      Applies the next time you open or join a room. Port defaults to 443.</p>
+  </div>
+  <div>
     <p class="eyebrow" style="text-align:left;margin:0 0 10px">Round trip</p>
     <div id="lat"></div>
   </div>
-  <button class="primary" id="close-settings">Back to the room</button>
+  <button class="primary" id="close-settings">Done</button>
 </div></div>
 
 <div id="share" class="sheet" hidden><div>
@@ -434,9 +445,16 @@ const connect = id => {
   handle(peer.call(id, stream), id);
 };
 
+// "host", "host:9000", or a pasted URL → PeerJS options. Blank/garbage → the public broker.
+function brokerOpts(v = localStorage.broker || '') {
+  const [host, port] = v.trim().replace(/^\w+:\/\//, '').replace(/\/.*$/, '').split(':');
+  if (!host) return undefined;
+  return { host, port: +port || 443, secure: +port !== 80, path: '/' };
+}
+
 // ponytail: never await this before painting the room — a stalled broker used to mean a dead button
 function start(id) {
-  peer = new Peer(id);
+  peer = new Peer(id, brokerOpts());
   peer.on('open', () => { brokerUp = true; refresh() });
   peer.on('disconnected', () => { brokerUp = false; refresh() });
   peer.on('close', () => { brokerUp = false; refresh() });
@@ -499,7 +517,8 @@ $('#enter').onclick = () => {
     start(PREFIX + code);
     // A joiner opens a data channel first; we answer with everyone we know, they call each.
     peer.on('connection', c => c.on('open', () => c.send([...peers].filter(p => p !== c.peer))));
-    url = location.origin + location.pathname + '?c=' + code;
+    url = location.origin + location.pathname + '?c=' + code
+        + (brokerOpts() ? '&s=' + encodeURIComponent(localStorage.broker.trim()) : '');
     $('#readout').innerHTML = '';
     for (const ch of code) $('#readout').append(Object.assign(document.createElement('b'), { textContent: ch }));
     $('#code-chip').hidden = false;
@@ -525,7 +544,10 @@ $('#code-chip').onclick = () => $('#share').hidden = false;
 
 /* ---- settings --------------------------------------------------------- */
 $('#gear').onclick = () => { pingAll(); $('#settings').hidden = false };
+$('#open-settings').onclick = () => $('#settings').hidden = false;
 $('#close-settings').onclick = () => $('#settings').hidden = true;
+$('#s-broker').value = localStorage.broker || '';
+$('#s-broker').oninput = e => localStorage.broker = e.target.value.trim();
 
 // One applyConstraints on the local track re-encodes for everyone — no per-peer plumbing.
 $('#s-quality').onclick = async () => {
@@ -559,7 +581,9 @@ $('#leave').onclick = () => {
   location.href = location.pathname;
 };
 
-const fromLink = new URLSearchParams(location.search).get('c');
+const q = new URLSearchParams(location.search), fromLink = q.get('c');
+// The host's link carries their broker: a joiner on the default one would never find them.
+if (q.get('s') && brokerOpts(q.get('s'))) $('#s-broker').value = localStorage.broker = q.get('s').trim();
 if (fromLink) { $('#code-in').value = fromLink.toUpperCase(); openSetup('join') }
 </script>
 </html>
